@@ -1,0 +1,57 @@
+const int pirSensorPin1 = 2;          // Digital input pin for PIR sensor 1
+const int pirSensorPin2 = 3;          // Digital input pin for PIR sensor 2
+const int pirLedPin = 13;             // Digital output pin for PIR sensor LED
+const int pirLedPin2 = 12;            // Digital output pin for PIR sensor 2 LED
+
+volatile int motionFlag1 = 0;
+volatile int motionFlag2 = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(pirSensorPin1, INPUT);
+  pinMode(pirSensorPin2, INPUT);
+  pinMode(pirLedPin, OUTPUT);
+  pinMode(pirLedPin2, OUTPUT);
+
+  //  interrupts for PIR sensors
+  attachInterrupt(digitalPinToInterrupt(pirSensorPin1), pirMotionDetected1, RISING);
+  attachInterrupt(digitalPinToInterrupt(pirSensorPin2), pirMotionDetected2, RISING);
+}
+
+void loop() {
+
+void pirMotionDetected1() {
+  motionFlag1 = 1;
+  checkAndHandleFlags();
+}
+
+void pirMotionDetected2() {
+  motionFlag2 = 1;
+  checkAndHandleFlags();
+}
+
+void checkAndHandleFlags() {
+  if (motionFlag1) {
+    digitalWrite(pirLedPin, HIGH);  // Turn on PIR sensor 1 LED
+    Serial.println("Motion detected by PIR sensor 1!");
+
+    delay(1000);  // Delay
+
+    digitalWrite(pirLedPin, LOW);  // Turn off PIR sensor 1 LED
+    Serial.println("PIR sensor 1 LED turned off");
+
+    motionFlag1 = 0;
+  }
+
+  if (motionFlag2) {
+    digitalWrite(pirLedPin2, HIGH);  // Turn on PIR sensor 2 LED
+    Serial.println("Motion detected by PIR sensor 2!");
+
+    delay(1000);  // Delay
+
+    digitalWrite(pirLedPin2, LOW);  // Turn off PIR sensor 2 LED
+    Serial.println("PIR sensor 2 LED turned off");
+
+    motionFlag2 = 0;
+  }
+}
